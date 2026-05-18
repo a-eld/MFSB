@@ -97,7 +97,7 @@ A_heat = make_dirichlet_matrix(speye(Nx)-dtau*(sigma2/2)*L);
 A_dt_dec   = decomposition(A_dt,'lu');
 A_heat_dec = decomposition(A_heat,'lu');
 
-DxLog_ = @(u) log_derivative_no_endpoint(u,dx);
+DxLog_ = @(u) log_derivative(u,dx);
 
 %% Noninteracting initialization
 kernel_phi = @(u,tau) heat_propagate(u,tau,dtau,sigma2,L,A_heat_dec,bcValPhi,posTol);
@@ -687,28 +687,7 @@ function uNext = positive_imex_step(u, q, react, dt, dx, sigma2, L, A_dt_dec, bc
     uNext = uCur;
 end
 
-% function p = reconstruct_density_product(Wp,phi,hatphi,posTol,name)
-%     require_positive_factor(phi,[name ' phi'],posTol);
-%     require_positive_factor(hatphi,[name ' hatphi'],posTol);
-% 
-%     logp = -2*Wp + log(phi) + log(hatphi);
-% 
-%     if any(~isfinite(logp))
-%         error('%s: log-density product has nonfinite entries.',name);
-%     end
-%     if max(logp(2:end-1)) > log(realmax)
-%         error('%s: density product overflows.',name);
-%     end
-%     if min(logp(2:end-1)) < log(realmin)
-%         error('%s: density product underflows.',name);
-%     end
-% 
-%     p = exp(logp);
-%     p(1) = 0;
-%     p(end) = 0;
-% 
-%     require_positive_density(p,name,posTol);
-% end
+
 
 function p = reconstruct_density_product(Wp,phi,hatphi,posTol,name)
 require_positive_factor(phi,[name ' phi'],posTol);
@@ -751,24 +730,8 @@ function adv = advect_upwind(v,a,dx)
     adv(n) = 0;
 end
 
-% function df = log_derivative_no_endpoint(u,dx)
-%     n = numel(u);
-%     lu = log(u);
-%     df = zeros(size(u));
-% 
-%     % Second-order one-sided derivatives at the first interior points,
-%     % avoiding the artificial boundary values lu(1), lu(n).
-%     df(2)   = (-3*lu(2) + 4*lu(3) - lu(4))/(2*dx);
-%     df(n-1) = ( 3*lu(n-1) - 4*lu(n-2) + lu(n-3))/(2*dx);
-% 
-%     % Centered derivative away from the boundary.
-%     df(3:n-2) = (lu(4:n-1)-lu(2:n-3))/(2*dx);
-% 
-%     df(1) = 0;
-%     df(n) = 0;
-% end
 
-function df = log_derivative_no_endpoint(u,dx)
+function df = log_derivative(u,dx)
 n = numel(u);
 idx = 2:n-1;
 
