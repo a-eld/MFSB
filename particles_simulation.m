@@ -5,7 +5,7 @@ sigma = sqrt(sigma2);
 % u_t(x) = sigma * grad log(phi_t(x))
 ugrid = zeros(Nx,Nt+1);
 for n = 1:Nt+1
-    ugrid(:,n) = sigma * log_derivative_no_endpoint(phi_k(:,n),dx);
+    ugrid(:,n) = sigma * log_derivative(phi_k(:,n),dx);
 end
 
 %% Sample initial particles from p_in
@@ -166,7 +166,7 @@ legend([hInt,hSB], ...
 
 exportgraphics(gcf,'plot-MFSB-sample-paths-repulsive.png','Resolution',300);
 %%
-function df = log_derivative_no_endpoint(u,dx)
+function df = log_derivative(u,dx)
     n = numel(u);
     idx = 2:n-1;
 
