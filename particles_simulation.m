@@ -9,7 +9,6 @@ for n = 1:Nt+1
 end
 
 %% Sample initial particles from p_in
-%% Sample initial particles from p_in
 p0 = max(p_in,0);
 p0(1) = 0;
 p0(end) = 0;
