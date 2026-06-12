@@ -653,7 +653,7 @@ function uNext = positive_imex_step(u, q, react, dt, dx, sigma2, L, A_dt_dec, bc
 
             if all(isfinite(rhsAdv)) && all(rhsAdv(2:end-1) > 0)
                 expArg = -h*react;
-                expArg = min(max(expArg,-50),50);
+                
                 rhs = rhsAdv.*exp(expArg);
                 rhs = impose_dirichlet(rhs,bcVal);
 
